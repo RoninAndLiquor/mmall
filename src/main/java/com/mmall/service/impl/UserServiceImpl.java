@@ -1,5 +1,6 @@
 package com.mmall.service.impl;
 
+import com.google.gson.Gson;
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
 import com.mmall.common.TokenCache;
@@ -7,7 +8,10 @@ import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.util.MD5Util;
+import net.sf.jsqlparser.schema.Server;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +23,14 @@ import java.util.UUID;
 @Service("iUserService")
 public class UserServiceImpl implements IUserService{
 
+    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Autowired
     private UserMapper userMapper;
 
     @Override
     public ServerResponse<User> Login(String username, String password) {
+        LOG.info("*** 登陆入参 ***"+username +"  "+password);
         int resultCount = userMapper.checkUsername(username);
         if(resultCount == 0){
             return ServerResponse.createByErrorMsg("用户名不存在");
@@ -39,11 +46,12 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public ServerResponse<String> register(User user) {
+        LOG.info("*** 注册入参 user{} *** "+new Gson().toJson(user));
         ServerResponse validResponse = checkValid(user.getUsername(),Const.USERNAME);
         if(!validResponse.isSuccess()){
             return ServerResponse.createByErrorMsg("用户名已存在");
         }
-        validResponse = checkValid(user.getUsername(),Const.EMAIL);
+        validResponse = checkValid(user.getEmail(),Const.EMAIL);
         if(!validResponse.isSuccess()){
             return ServerResponse.createByErrorMsg("Email已存在");
         }
@@ -58,6 +66,7 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public ServerResponse<String> checkValid(String str, String type) {
+        LOG.info("*** checkValid 入参： ***"+str+" "+type);
         if(StringUtils.isNotBlank(type)){
             if(Const.USERNAME.equals(type)){
                 int resultCount = userMapper.checkUsername(str);
@@ -79,11 +88,13 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public ServerResponse selectQuestion(String username) {
+        LOG.info("*** 查询问题入参 ***"+username);
         ServerResponse validResponse = checkValid(username,Const.USERNAME);
         if(validResponse.isSuccess()){
             return  ServerResponse.createByErrorMsg("用户不存在");
         }
         String question  = userMapper.selectQuestionByUsernmae(username);
+        LOG.info("*** 查询问题结果集 question{}***"+new Gson().toJson(question));
         if(StringUtils.isNotBlank(question)){
             return  ServerResponse.createBySuccess(question);
         }
@@ -92,6 +103,7 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public ServerResponse<String> checkAnswer(String username, String question, String answer) {
+        LOG.info("*** 检查问题入参 ***"+username +" "+question+" "+answer);
         int resultCount = userMapper.checkAnswer(username,question,answer);
         if(resultCount>0){
             String forgetToken = UUID.randomUUID().toString();
@@ -103,6 +115,7 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public ServerResponse<String> forgetResetPassword(String username, String password, String forgetToken) {
+        LOG.info("*** 忘记密码重置密码 入参  ***"+username+" "+password + " "+forgetToken);
         if(StringUtils.isBlank(forgetToken)){
             return ServerResponse.createByErrorMsg("参数错误,token需要传递");
         }
@@ -111,7 +124,7 @@ public class UserServiceImpl implements IUserService{
             return  ServerResponse.createByErrorMsg("用户不存在");
         }
         String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX+username);
-        if(StringUtils.isNotBlank(token)){
+        if(!StringUtils.isNotBlank(token)){
             return ServerResponse.createBySuccessMsg("token无效或者过期");
         }
         if(StringUtils.equals(token,forgetToken)){
@@ -128,6 +141,7 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user) {
+        LOG.info("*** 重置密码入参 ***"+passwordOld+" "+passwordNew+" "+new Gson().toJson(user));
         //防止横向越权，要校验一下这个用户的旧密码 一定要指定这个用户
         // 因为我们会查询一个count(1) 如果不指定id,那么结果就是true或者count>0
         int count = userMapper.checkPassword(MD5Util.MD5EncodeUtf8(passwordOld), user.getId());
@@ -144,6 +158,7 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public ServerResponse<User> updateInformation(User user) {
+        LOG.info("*** 更新个人信息入参 user{} *** "+new Gson().toJson(user));
         //username 是不能修改的
         //email进行校验
         int count = userMapper.checkEmailByUserId(user.getId(), user.getEmail());
@@ -166,11 +181,23 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public ServerResponse<User> getInformation(Integer userId) {
+        LOG.info("*** 获取用户信息入参  ***" +userId);
         User user = userMapper.selectByPrimaryKey(userId);
         if(user == null){
             return ServerResponse.createByErrorMsg("找不到当前用户");
         }
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
+    }
+
+    //bankend
+
+
+    @Override
+    public ServerResponse checkAdinRole(User user) {
+        if(user!=null && user.getRole().intValue() == Const.Role.ROLE_ADMIN){
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
     }
 }

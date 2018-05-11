@@ -23,4 +23,8 @@ public interface IUserService {
 
     ServerResponse<User> getInformation(Integer userId);
 
+    //bankend
+
+    ServerResponse checkAdinRole(User user);
+
 }
