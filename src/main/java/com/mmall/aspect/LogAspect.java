@@ -56,7 +56,7 @@ public class LogAspect {
 	 */
 	/*@Before(value="pointcut()")
 	public void before(JoinPoint point){
-		System.out.println(""+getDateStr()+"前置通知");
+		LOG.info(""+getDateStr()+"前置通知");
 		//获取目标方法的参数信息
 		Object[] args = point.getArgs();
 		//AOP代理类的信息
@@ -67,10 +67,10 @@ public class LogAspect {
 		Signature signature = point.getSignature();
 		//代理的方法
 		String name = signature.getName();
-		System.out.println(""+getDateStr()+"代理的方法:"+name);
+		LOG.info(""+getDateStr()+"代理的方法:"+name);
 		//AOP代理类的名字
 		String declaringTypeName = signature.getDeclaringTypeName();
-		System.out.println(""+getDateStr()+"AOP代理类的名字:"+declaringTypeName);
+		LOG.info(""+getDateStr()+"AOP代理类的名字:"+declaringTypeName);
 		//AOP代理类(class)信息
 		Class declaringType = signature.getDeclaringType();
 		//获取RequestAttributes
@@ -83,7 +83,7 @@ public class LogAspect {
 		}else{
 			ip = request.getHeader("x-forwarded-for");
 		}
-		System.out.println(""+getDateStr()+"訪問者的IP:"+ip);
+		LOG.info(""+getDateStr()+"訪問者的IP:"+ip);
 		//如果想要获取Session的话 可以这样写
 		HttpSession session = (HttpSession) requestAttributes.resolveReference(RequestAttributes.REFERENCE_SESSION);
 		Enumeration<String> enumeration = request.getParameterNames();
@@ -94,7 +94,7 @@ public class LogAspect {
 		}
 		String str = JSON.toJSONString(paramMap);
 		if(args.length>0){
-			System.out.println(getDateStr()+"param:"+str);
+			LOG.info(getDateStr()+"param:"+str);
 		}
 	}*/
 	
@@ -114,10 +114,10 @@ public class LogAspect {
     @AfterReturning(value = "pointcut()",returning = "keys")  
     public void doAfterReturningAdvice1(JoinPoint joinPoint,Object keys){  
   
-        System.out.println(getDateStr()+"返回值:"+new Gson().toJson(keys));
+        LOG.info(getDateStr()+"返回值:"+new Gson().toJson(keys));
         String name = joinPoint.getSignature().getName();
         String declaringTypeName = joinPoint.getSignature().getDeclaringTypeName();
-        System.out.println(getDateStr()+declaringTypeName+"."+name);
+        LOG.info(getDateStr()+declaringTypeName+"."+name);
         System.err.println("------------------------------------END------------------------------------");
         System.gc();
     }  
@@ -125,7 +125,7 @@ public class LogAspect {
     /*@AfterReturning(value = "pointcut()",returning = "keys",argNames = "keys")  
     public void doAfterReturningAdvice2(String keys){  
   
-        System.out.println("*** 第二个后置返回通知的返回值 ***："+keys);  
+        LOG.info("*** 第二个后置返回通知的返回值 ***："+keys);  
     } */ 
     
     /**
@@ -142,9 +142,9 @@ public class LogAspect {
     /*@AfterThrowing(value = "pointcut()",throwing = "exception")
     public void doAfterThrowingAdvice(JoinPoint joinPoint,Throwable exception){  
         //目标方法名：  
-        System.out.println(joinPoint.getSignature().getName()+"  *****  "+exception.getMessage());  
+        LOG.info(joinPoint.getSignature().getName()+"  *****  "+exception.getMessage());  
         if(exception instanceof NullPointerException){  
-            System.out.println("发生了空指针异常!!!!!");  
+            LOG.info("发生了空指针异常!!!!!");  
         }  
     } */
 
@@ -167,8 +167,8 @@ public class LogAspect {
 		String declaringTypeName = signature.getDeclaringTypeName();
 		System.err.println("-----------------------------------START-----------------------------------");
 		Object[] args = proceedingJoinPoint.getArgs();
-		System.out.println(""+getDateStr()+"环绕通知的目标方法名:"+name);
-		System.out.println(""+getDateStr()+"环绕通知的目标方法参数:"+new Gson().toJson(args));
+		LOG.info(""+getDateStr()+"环绕通知的目标方法名:"+name);
+		LOG.info(""+getDateStr()+"环绕通知的目标方法参数:"+new Gson().toJson(args));
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         HttpSession session = (HttpSession) requestAttributes.resolveReference(RequestAttributes.REFERENCE_SESSION);
         Object attribute = session.getAttribute("user");
