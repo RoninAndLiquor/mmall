@@ -37,12 +37,12 @@ public class UserController {
      */
     @RequestMapping(value = "login.json",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse response, HttpServletRequest request){
+    public ServerResponse<User> login(String username, String password,HttpServletResponse response, HttpServletRequest request){
+        HttpSession session = request.getSession(true);
         ServerResponse<User> serverResponse = userService.Login(username, password);
         if(serverResponse.isSuccess()){
             //session.setAttribute(Const.CURRENT_USER,response.getData());
             CookieUtil.writeLoginToken(response,session.getId());
-            CookieUtil.readLoginToken(request);
             RedisPoolUtil.setEx(session.getId(),Const.RedisCacheExtime.REDIS_SESSION_EXPIRE, JsonUtil.obj2String(serverResponse.getData()));
         }
         return serverResponse;
