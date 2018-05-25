@@ -24,7 +24,13 @@ public class CartController {
     private ICartService iCartService;
 
 
-
+    /**
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[session]
+      * @return: com.mmall.common.ServerResponse<com.mmall.vo.CartVo> 
+      * @Date: 2018/5/24 10:46 
+      */ 
     @RequestMapping("list.do")
     @ResponseBody
     public ServerResponse<CartVo> list(HttpSession session){
@@ -46,7 +52,13 @@ public class CartController {
     }
 
 
-
+    /**
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[session, count, productId]
+      * @return: com.mmall.common.ServerResponse<com.mmall.vo.CartVo> 
+      * @Date: 2018/5/24 10:47 
+      */ 
     @RequestMapping("update.do")
     @ResponseBody
     public ServerResponse<CartVo> update(HttpSession session, Integer count, Integer productId){
@@ -56,7 +68,13 @@ public class CartController {
         }
         return iCartService.update(user.getId(),productId,count);
     }
-
+     /*
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[session, productIds]
+      * @return: com.mmall.common.ServerResponse<com.mmall.vo.CartVo> 
+      * @Date: 2018/5/24 10:47 
+      */ 
     @RequestMapping("delete_product.do")
     @ResponseBody
     public ServerResponse<CartVo> deleteProduct(HttpSession session,String productIds){
@@ -67,7 +85,13 @@ public class CartController {
         return iCartService.deleteProduct(user.getId(),productIds);
     }
 
-
+    /**
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[session]
+      * @return: com.mmall.common.ServerResponse<com.mmall.vo.CartVo> 
+      * @Date: 2018/5/24 10:48 
+      */ 
     @RequestMapping("select_all.do")
     @ResponseBody
     public ServerResponse<CartVo> selectAll(HttpSession session){
@@ -77,7 +101,13 @@ public class CartController {
         }
         return iCartService.selectOrUnSelect(user.getId(),null,Const.Cart.CHECKED);
     }
-
+    /**
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[session]
+      * @return: com.mmall.common.ServerResponse<com.mmall.vo.CartVo> 
+      * @Date: 2018/5/24 10:48 
+      */ 
     @RequestMapping("un_select_all.do")
     @ResponseBody
     public ServerResponse<CartVo> unSelectAll(HttpSession session){
@@ -89,7 +119,13 @@ public class CartController {
     }
 
 
-
+    /**
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[session, productId]
+      * @return: com.mmall.common.ServerResponse<com.mmall.vo.CartVo> 
+      * @Date: 2018/5/24 10:48 
+      */ 
     @RequestMapping("select.do")
     @ResponseBody
     public ServerResponse<CartVo> select(HttpSession session,Integer productId){
@@ -99,7 +135,13 @@ public class CartController {
         }
         return iCartService.selectOrUnSelect(user.getId(),productId,Const.Cart.CHECKED);
     }
-
+    /**
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[session, productId] 
+      * @return: com.mmall.common.ServerResponse<com.mmall.vo.CartVo> 
+      * @Date: 2018/5/24 10:50 
+      */ 
     @RequestMapping("un_select.do")
     @ResponseBody
     public ServerResponse<CartVo> unSelect(HttpSession session,Integer productId){
@@ -111,7 +153,13 @@ public class CartController {
     }
 
 
-
+    /**
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[session]
+      * @return: com.mmall.common.ServerResponse<java.lang.Integer> 
+      * @Date: 2018/5/24 14:14
+      */ 
     @RequestMapping("get_cart_product_count.do")
     @ResponseBody
     public ServerResponse<Integer> getCartProductCount(HttpSession session){

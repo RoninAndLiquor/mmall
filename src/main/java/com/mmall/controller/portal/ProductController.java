@@ -24,7 +24,13 @@ public class ProductController {
     public ServerResponse<ProductDetailVO> detail(Integer productId){
         return productService.getProductDetail(productId);
     }
-
+    /**
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[keyword, categoryId, pageNum, pageSize, orderBy]
+      * @return: com.mmall.common.ServerResponse<com.github.pagehelper.PageInfo> 
+      * @Date: 2018/5/24 14:14
+      */ 
     @RequestMapping("list.json")
     @ResponseBody
     public ServerResponse<PageInfo> list(@RequestParam(value = "keyword",required = false) String keyword,

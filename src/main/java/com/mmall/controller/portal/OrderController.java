@@ -30,7 +30,13 @@ public class OrderController {
 
     @Autowired
     private IOrderService orderService;
-
+    /**
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[session, shippingId] 
+      * @return: com.mmall.common.ServerResponse 
+      * @Date: 2018/5/24 10:51 
+      */ 
     @RequestMapping(value = "create.json",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse create(HttpSession session,Integer shippingId){
@@ -45,7 +51,13 @@ public class OrderController {
 
 
 
-
+    /**
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[session, orderNo, request] 
+      * @return: com.mmall.common.ServerResponse 
+      * @Date: 2018/5/24 10:51 
+      */ 
     @RequestMapping(value = "pay.json",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse pay(HttpSession session, Long orderNo, HttpServletRequest request){
@@ -88,7 +100,13 @@ public class OrderController {
         }
         return Const.AlipayCallback.RESPONSE_FAILED;
     }
-
+    /**
+      * @Author:蒋帅锋
+      * @Description: 
+      * @params:[session, orderNo] 
+      * @return: com.mmall.common.ServerResponse<java.lang.Boolean>
+      * @Date: 2018/5/24 14:14
+      */ 
     @RequestMapping(value = "queryOrderPayStatus.json",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session, Long orderNo){

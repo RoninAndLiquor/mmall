@@ -2,7 +2,7 @@
 
 <html>
 <body>
-
+<h1>111</h1>
 <form action="/mmall/manage/product/upload.json" method = "post" enctype="multipart/form-data">
     <input type="file" name="uploadFile">
     <input type="submit" value="upload">
